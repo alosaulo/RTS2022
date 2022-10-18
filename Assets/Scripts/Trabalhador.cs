@@ -18,20 +18,6 @@ public class Trabalhador : MonoBehaviour
 
     void Start()
     {
-        int meuR = Random.Range(0, 10);
-
-        if(meuR > 5)
-        {
-            tipo = "Madeira";
-        }
-        else if (meuR > 1)
-        {
-            tipo = "Carne";
-        }
-        else
-        {
-            tipo = "Lazer";
-        }
 
         Animais = MinhaCasa.GetComponent<Casa>().Animais;
         Floresta = MinhaCasa.GetComponent<Casa>().Floresta;
@@ -165,5 +151,10 @@ public class Trabalhador : MonoBehaviour
             Agente.speed = 10;
             Agente.SetDestination(Lazer.transform.position);
         }
+    }
+
+    public void DefinirTipo(string meuTipo)
+    {
+        tipo = meuTipo;
     }
 }
