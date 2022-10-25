@@ -155,6 +155,12 @@ public class Trabalhador : MonoBehaviour
         if (Vector3.Distance(transform.position, Lazer.transform.position) < 3)
         {
             Agente.speed = 0;
+            temporizador += Time.deltaTime;
+            if (temporizador > 1f)
+            {
+                MinhaCasa.GetComponent<Casa>().EstouCurtindo();
+                temporizador = 0;
+            }
 
         }
         else

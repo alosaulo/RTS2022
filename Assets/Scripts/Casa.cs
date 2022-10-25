@@ -32,7 +32,7 @@ public class Casa : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Time.timeScale = 5;
         Criar("C");
         Criar("C");
         Criar("C");
@@ -49,15 +49,15 @@ public class Casa : MonoBehaviour
         Visualizar();
         if(carne > 150)
         {
-            if(NecessitaVagabundo > 20)
+            if(populacao > 30)
             {
                 Criar("L");
-                NecessitaVagabundo = 0;
+                
             }
             else
             {
-                NecessitaVagabundo++;
-                if(TrabalhadoresCarne > 3)
+                
+                if(TrabalhadoresCarne > 4)
                 {
                     Criar("M");
                     TrabalhadoresCarne = 0;
@@ -73,7 +73,7 @@ public class Casa : MonoBehaviour
             
         }
         
-        if(madeira > 70)
+        if(madeira > 90)
         {
             CriarCasa();
         }
@@ -115,7 +115,7 @@ public class Casa : MonoBehaviour
                 if (Letra == "L")
                 {
                     meuTrabalhador.GetComponent<Trabalhador>().DefinirTipo("Lazer");
-                    pessoaLazer++;
+                    
                 }
                 Trabalhadores.Add(meuTrabalhador);
             }
@@ -168,6 +168,11 @@ public class Casa : MonoBehaviour
                 Time.timeScale = 0;
             }
         }
+    }
+
+    public void EstouCurtindo()
+    {
+        pessoaLazer++;
     }
 
     void Visualizar()
