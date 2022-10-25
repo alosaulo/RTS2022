@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Casa : MonoBehaviour
 {
@@ -15,6 +16,19 @@ public class Casa : MonoBehaviour
     public int LimitePopulacao;
     private int qtdCasas = 1;
     public float Relogio = 300;
+    private float tempoCarne = 0;
+    private float tempoMadeira = 0;
+    private int pessoaLazer = 0;
+    //DadosDaCasa
+    public Text Dadopopulacao;
+    public Text Dadocarne;
+    public Text Dadomadeira;
+    public Text Dadovagabundo;
+    public Text DadoTempo;
+
+    private int TrabalhadoresCarne = 3;
+    private int NecessitaVagabundo = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,23 +45,35 @@ public class Casa : MonoBehaviour
     {
         LimitePopulacao = qtdCasas * 5;
         populacao = Trabalhadores.Count;
-        Relogio -= Time.deltaTime;
-
-        if(carne > 500)
+        TempoDoJogo();
+        Visualizar();
+        if(carne > 150)
         {
-            if(populacao > 15)
+            if(NecessitaVagabundo > 20)
             {
                 Criar("L");
+                NecessitaVagabundo = 0;
             }
             else
             {
-                Criar("C");
+                NecessitaVagabundo++;
+                if(TrabalhadoresCarne > 3)
+                {
+                    Criar("M");
+                    TrabalhadoresCarne = 0;
+                }
+                else
+                {
+                    Criar("C");
+                    TrabalhadoresCarne++;
+                }
+                
             }
             
             
         }
         
-        if(madeira > 100)
+        if(madeira > 70)
         {
             CriarCasa();
         }
@@ -89,6 +115,7 @@ public class Casa : MonoBehaviour
                 if (Letra == "L")
                 {
                     meuTrabalhador.GetComponent<Trabalhador>().DefinirTipo("Lazer");
+                    pessoaLazer++;
                 }
                 Trabalhadores.Add(meuTrabalhador);
             }
@@ -103,5 +130,52 @@ public class Casa : MonoBehaviour
             qtdCasas++;
             madeira = madeira - 50;
         }
+    }
+
+    void TempoDoJogo()
+    {
+        Relogio -= Time.deltaTime;
+        Consumo();
+        if (Relogio <= 0)
+        {
+            Debug.Log("Acabou o Tempo");
+            Time.timeScale = 0;
+        }
+    }
+
+    void Consumo()
+    {
+        tempoCarne += Time.deltaTime;
+        tempoMadeira += Time.deltaTime;
+
+        if(tempoCarne > 5)
+        {
+            tempoCarne = 0;
+            carne = carne - populacao;
+            if(carne < 0)
+            {
+                Debug.Log("Morreu de Fome");
+                Time.timeScale = 0;
+            }
+        }
+        if(tempoMadeira > 10)
+        {
+            tempoMadeira = 0;
+            madeira = madeira - populacao;
+            if(madeira < 0)
+            {
+                Debug.Log("Morreu de Frio");
+                Time.timeScale = 0;
+            }
+        }
+    }
+
+    void Visualizar()
+    {
+        Dadopopulacao.text = "População: "+populacao.ToString()+" /"+LimitePopulacao.ToString();
+        Dadocarne.text = "Carne: "+carne.ToString();
+        Dadomadeira.text = "Madeira: "+madeira.ToString();
+        Dadovagabundo.text = "Lazer: "+ pessoaLazer.ToString();
+        DadoTempo.text = "Para Acabar: " + Relogio.ToString()+" segundos";
     }
 }

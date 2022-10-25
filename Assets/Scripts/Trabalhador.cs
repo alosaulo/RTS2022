@@ -14,7 +14,7 @@ public class Trabalhador : MonoBehaviour
     public int carne;
     public bool colhendo = true;
     public string tipo = "";
-    
+    private float temporizador;
 
     void Start()
     {
@@ -62,7 +62,12 @@ public class Trabalhador : MonoBehaviour
             if (Vector3.Distance(transform.position, Floresta.transform.position) < 3)
             {
                 Agente.speed = 0;
-                madeira++;
+                temporizador += Time.deltaTime;
+                if (temporizador > 0.1f)
+                {
+                    madeira++;
+                    temporizador = 0;
+                }
                 if (madeira >= 10)
                 {
                     colhendo = false;
@@ -105,7 +110,13 @@ public class Trabalhador : MonoBehaviour
             if (Vector3.Distance(transform.position, Animais.transform.position) < 3)
             {
                 Agente.speed = 0;
-                carne++;
+                temporizador += Time.deltaTime;
+                if (temporizador > 0.1f)
+                {
+                    carne++;
+                    temporizador = 0;
+                }
+                
                 if (carne >= 10)
                 {
                     colhendo = false;
@@ -157,4 +168,7 @@ public class Trabalhador : MonoBehaviour
     {
         tipo = meuTipo;
     }
+
+
+   
 }
