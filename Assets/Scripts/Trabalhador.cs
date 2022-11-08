@@ -13,7 +13,7 @@ public class Trabalhador : MonoBehaviour
     public int madeira;
     public int carne;
     public bool colhendo = true;
-    public string tipo = "";
+    public TipoTrabalhador tipo;
     private float temporizador;
 
     void Start()
@@ -34,21 +34,18 @@ public class Trabalhador : MonoBehaviour
     void Navegacao()
     {
         
-        if(tipo == "Carne")
+        if(tipo == TipoTrabalhador.Carne)
         {
             TrabalharCarne();
         }
-        if(tipo == "Madeira")
+        if(tipo == TipoTrabalhador.Madeira)
         {
             TrabalharMadeira();
         }
-        if (tipo == "Lazer")
+        if (tipo == TipoTrabalhador.Lazer)
         {
             CurtirAVida();
         }
-
-
-
 
     }
 
@@ -62,12 +59,14 @@ public class Trabalhador : MonoBehaviour
             if (Vector3.Distance(transform.position, Floresta.transform.position) < 3)
             {
                 Agente.speed = 0;
+                
                 temporizador += Time.deltaTime;
                 if (temporizador > 0.1f)
                 {
                     madeira++;
                     temporizador = 0;
                 }
+
                 if (madeira >= 10)
                 {
                     colhendo = false;
@@ -75,7 +74,7 @@ public class Trabalhador : MonoBehaviour
             }
             else
             {
-                //Esta indo em diração a madeira
+                //Esta indo em diraï¿½ï¿½o a madeira
                 Agente.speed = 10;
                 Agente.SetDestination(Floresta.transform.position);
             }
@@ -102,14 +101,14 @@ public class Trabalhador : MonoBehaviour
 
     public void TrabalharCarne()
     {
-        //Ir buscar madeira
+        //Ir buscar carne
         if (colhendo)
         {
-
-            //Chegou na madeira
+            //Chegou na carne
             if (Vector3.Distance(transform.position, Animais.transform.position) < 3)
             {
                 Agente.speed = 0;
+                
                 temporizador += Time.deltaTime;
                 if (temporizador > 0.1f)
                 {
@@ -124,7 +123,7 @@ public class Trabalhador : MonoBehaviour
             }
             else
             {
-                //Esta indo em diração a madeira
+                //Esta indo em diraï¿½ï¿½o a madeira
                 Agente.speed = 10;
                 Agente.SetDestination(Animais.transform.position);
             }
@@ -170,7 +169,7 @@ public class Trabalhador : MonoBehaviour
         }
     }
 
-    public void DefinirTipo(string meuTipo)
+    public void DefinirTipo(TipoTrabalhador meuTipo)
     {
         tipo = meuTipo;
     }

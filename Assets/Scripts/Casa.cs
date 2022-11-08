@@ -10,16 +10,18 @@ public class Casa : MonoBehaviour
     public GameObject Lazer;
     public GameObject PrefabTrabalhador;
     public List<GameObject> Trabalhadores;
+    public float Relogio = 300;
+    [Header("Dados da Casa")]
     public int madeira = 50;
     public int carne = 500;
     public int populacao;
     public int LimitePopulacao;
     private int qtdCasas = 1;
-    public float Relogio = 300;
     private float tempoCarne = 0;
     private float tempoMadeira = 0;
     private int pessoaLazer = 0;
-    //DadosDaCasa
+    
+    [Header("VisualizaÃ§Ã£o Casa")]
     public Text Dadopopulacao;
     public Text Dadocarne;
     public Text Dadomadeira;
@@ -29,15 +31,47 @@ public class Casa : MonoBehaviour
     private int TrabalhadoresCarne = 3;
     private int NecessitaVagabundo = 0;
 
+    [Header("Qtd Trabalhadores")]
+    [SerializeField] private int qtdTrabalhadorCarne;
+    [SerializeField] private int qtdTrabalhadorMadeira;
+    [SerializeField] private int qtdTrabalhadorLazer;
+
     // Start is called before the first frame update
     void Start()
     {
         Time.timeScale = 5;
-        Criar("C");
-        Criar("C");
-        Criar("C");
-        Criar("M");
-        Criar("M");
+        Criar(TipoTrabalhador.Carne);
+        Criar(TipoTrabalhador.Carne);
+        Criar(TipoTrabalhador.Carne);
+        Criar(TipoTrabalhador.Madeira);
+        Criar(TipoTrabalhador.Madeira);
+    }
+
+    void Estrategia(){
+        if(carne > 150)
+        {
+            if(populacao > 30)
+            {
+                Criar(TipoTrabalhador.Lazer);
+            }
+            else
+            {
+                if(TrabalhadoresCarne > 3)
+                {
+                    Criar(TipoTrabalhador.Madeira);
+                    TrabalhadoresCarne = 0;
+                }
+                else
+                {
+                    Criar(TipoTrabalhador.Carne);
+                    TrabalhadoresCarne++;
+                }
+            }
+        }
+        if(madeira > 90 && populacao == LimitePopulacao)
+        {
+            CriarCasa();
+        }
     }
 
     // Update is called once per frame
@@ -47,38 +81,7 @@ public class Casa : MonoBehaviour
         populacao = Trabalhadores.Count;
         TempoDoJogo();
         Visualizar();
-        if(carne > 150)
-        {
-            if(populacao > 30)
-            {
-                Criar("L");
-                
-            }
-            else
-            {
-                
-                if(TrabalhadoresCarne > 4)
-                {
-                    Criar("M");
-                    TrabalhadoresCarne = 0;
-                }
-                else
-                {
-                    Criar("C");
-                    TrabalhadoresCarne++;
-                }
-                
-            }
-            
-            
-        }
-        
-        if(madeira > 90)
-        {
-            CriarCasa();
-        }
-
-
+        Estrategia();
     }
 
     public void ReceberMadeira(int mad)
@@ -93,7 +96,7 @@ public class Casa : MonoBehaviour
         carne = carne+ car;
     }
 
-    void Criar(string Letra)
+    void Criar(TipoTrabalhador tipoTrabalhador)
     {
         //Verifica Se pode Construir
         if(LimitePopulacao > populacao)
@@ -102,22 +105,24 @@ public class Casa : MonoBehaviour
             {
                 //Perde carne para criar um novo trabalhador
                 carne = carne - 50;
+
                 GameObject meuTrabalhador = Instantiate(PrefabTrabalhador, transform.position, Quaternion.identity);
                 meuTrabalhador.GetComponent<Trabalhador>().MinhaCasa = this.gameObject;
-                if (Letra == "C")
-                {
-                    meuTrabalhador.GetComponent<Trabalhador>().DefinirTipo("Carne");
-                }
-                if (Letra == "M")
-                {
-                    meuTrabalhador.GetComponent<Trabalhador>().DefinirTipo("Madeira");
-                }
-                if (Letra == "L")
-                {
-                    meuTrabalhador.GetComponent<Trabalhador>().DefinirTipo("Lazer");
-                    
-                }
+                meuTrabalhador.GetComponent<Trabalhador>().DefinirTipo(tipoTrabalhador);
                 Trabalhadores.Add(meuTrabalhador);
+
+                if (tipoTrabalhador == TipoTrabalhador.Carne)
+                {
+                    qtdTrabalhadorCarne++;
+                }
+                if (tipoTrabalhador == TipoTrabalhador.Madeira)
+                {
+                    qtdTrabalhadorMadeira++;
+                }
+                if (tipoTrabalhador == TipoTrabalhador.Lazer)
+                {
+                    qtdTrabalhadorLazer++;
+                }
             }
         }
 
@@ -177,7 +182,7 @@ public class Casa : MonoBehaviour
 
     void Visualizar()
     {
-        Dadopopulacao.text = "População: "+populacao.ToString()+" /"+LimitePopulacao.ToString();
+        Dadopopulacao.text = "Populaï¿½ï¿½o: "+populacao.ToString()+" /"+LimitePopulacao.ToString();
         Dadocarne.text = "Carne: "+carne.ToString();
         Dadomadeira.text = "Madeira: "+madeira.ToString();
         Dadovagabundo.text = "Lazer: "+ pessoaLazer.ToString();
